@@ -23,26 +23,30 @@ public class MainActivity extends AppCompatActivity {
 
         final MediaPlayer mediaPlayer=new MediaPlayer();
 
-        //playBtn.setEnabled(false);
-        //pauseBtn.setEnabled(false);
-        //stopBtn.setEnabled(false);
 
+        stopBtn.setEnabled(false);
+        pauseBtn.setEnabled(false);
         playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
+                    //初始化
                     mediaPlayer.reset();
-
+                    //assets文件夹里面的文件都是保持原始的文件格式，需要用AssetManager以字节流的形式读取文件。
                     AssetManager assetManager=getAssets();
                     AssetFileDescriptor assetFileDescriptor=
                             assetManager.openFd("song.mp3");
-                    mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
+                    //载入媒体文件
+                    mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(),
+                            assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
+                    //准备播放
                     mediaPlayer.prepare();
+                    //开始播放
                     mediaPlayer.start();
-
-                    pauseBtn.setEnabled(true);
+                    playBtn.setEnabled(false);
                     stopBtn.setEnabled(true);
-                    playBtn.setEnabled(true);
+                    pauseBtn.setEnabled(true);
+
                 }
                 catch (IllegalArgumentException e) {
                     e.printStackTrace();
@@ -73,7 +77,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mediaPlayer.isPlaying())
+                {
                     mediaPlayer.stop();
+                    playBtn.setEnabled(true);
+                    stopBtn.setEnabled(false);
+                    pauseBtn.setEnabled(false);
+                }
+                else
+                {
+                    mediaPlayer.stop();
+                    pauseBtn.setText("暂停");
+                    playBtn.setEnabled(true);
+                    stopBtn.setEnabled(false);
+                    pauseBtn.setEnabled(false);
+                }
+
             }
         });
     }
